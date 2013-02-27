@@ -39,6 +39,8 @@ Lightning *Lightning::create(const char *fileName, unsigned int capacity, float 
     pRet->displace = displace;
     ccBlendFunc blendFunc = {GL_ONE, GL_ONE};
     pRet->setBlendFunc(blendFunc);
+    pRet->alpha = 1.0f;
+    pRet->fadeOutRate = 0.03f;
 
 
     pRet->autorelease();
@@ -50,6 +52,7 @@ Lightning::~Lightning()
 }
 void Lightning::testLine(float x1, float y1, float x2, float y2)
 {
+    /*
     kmVec3 a = {x1, y1};
     kmVec3 b = {x2, y2};
 
@@ -77,8 +80,26 @@ void Lightning::testLine(float x1, float y1, float x2, float y2)
     s->setScaleX(20);
     //s->setScaleY(40/128.0);
     addChild(s);
-
+    */
 }
+void Lightning::draw()
+{
+    if(alpha <= 0)
+        return;
+    if( m_pobTextureAtlas->getTotalQuads() == 0 )
+    {
+        return;
+    }
+
+    CC_NODE_DRAW_SETUP();
+
+    arrayMakeObjectsPerformSelector(m_pChildren, updateTransform, CCSprite*);
+
+    ccGLBlendFunc( m_blendFunc.src, m_blendFunc.dst );
+
+    m_pobTextureAtlas->drawQuads();
+}
+
 void Lightning::midDisplacement(float x1, float y1, float x2, float y2, float dis)
 {
     if(dis < detail){

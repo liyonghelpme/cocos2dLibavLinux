@@ -30,6 +30,7 @@ public:
     ~Lightning();
     void midDisplacement(float x1, float y1, float x2, float y2, float displace);
     void testLine(float x1, float y1, float x2, float y2);
+    virtual void draw();
 
 private:
 
@@ -38,6 +39,8 @@ private:
     float detail; //闪电的分段长度
     float thickness; //闪电的粗细
     float displace; //闪电的随机性
+    float alpha;
+    float fadeOutRate;
     string fileName;
 };
 #endif

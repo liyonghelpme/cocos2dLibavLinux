@@ -48,6 +48,7 @@ bool HelloWorld::init()
     //lightning->testLine(300 ,400, 50, 200);
     //lightning->testLine(50 ,200, 300, 400);
     this->addChild(lightning);
+    //lightning->runAction(CCFadeOut::create(2));
     
     return true;
 }
