@@ -9,6 +9,9 @@
 Lightning *lightning = Lightning::create(NULL, 100, 20.0, 10.0, 20.0);
 lightning->midDisplacement(100, 200, 150, 200, 100.0);
 this->addChild(lightning);
+
+
+capacity 决定CCSpriteBatchNode 能够容纳的线段数量
 */
 using namespace std;
 using namespace cocos2d;
@@ -17,7 +20,7 @@ class Line : public CCSprite
 {
 public:
     kmVec3 a, b;
-    static Line *create(const char *fileName, kmVec3 &a, kmVec3 &b, float thickness);
+    static Line *create(const char *fileName, kmVec3 &a, kmVec3 &b, float thickness, float deg, ccColor3B c, kmVec3 &temp);
 };
 
 class Lightning : public CCSpriteBatchNode

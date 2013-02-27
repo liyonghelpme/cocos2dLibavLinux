@@ -43,8 +43,8 @@ bool HelloWorld::init()
     printf("%f, %f, %f, %f\n", visibleSize.width, visibleSize.height, origin.x, origin.y);
     printf("winSize %f, %f, %f, %f, %f\n", winSize.width, winSize.height, winPixle.width, winPixle.height, contentScalor);
 
-    Lightning *lightning = Lightning::create(NULL, 100, 20.0, 10.0, 20.0);
-    lightning->midDisplacement(100, 200, 150, 200, 100.0);
+    Lightning *lightning = Lightning::create(NULL, 100, 10.0, 10.0, 20.0);
+    lightning->midDisplacement(0, 160, 480, 160, 100.0);
     //lightning->testLine(300 ,400, 50, 200);
     //lightning->testLine(50 ,200, 300, 400);
     this->addChild(lightning);
