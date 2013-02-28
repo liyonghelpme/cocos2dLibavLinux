@@ -32,6 +32,7 @@ Lightning *Lightning::create(const char *fileName, unsigned int capacity, float 
     pRet->initWithFile("edge.png", capacity);
     pRet->fileName = "edge.png";
     pRet->lines = CCArray::create();
+    pRet->lines->retain();
     pRet->detail = detail;
     pRet->thickness = thickness;
     pRet->displace = displace;
