@@ -10,17 +10,18 @@ Lightning *lightning = Lightning::create(NULL, 100, 20.0, 10.0, 20.0);
 lightning->midDisplacement(100, 200, 150, 200, 100.0);
 this->addChild(lightning);
 
-
 capacity 决定CCSpriteBatchNode 能够容纳的线段数量
 */
 using namespace std;
 using namespace cocos2d;
+class Lightning;
 
 class Line : public CCSprite
 {
 public:
+    Lightning *lightning;
     kmVec3 a, b;
-    static Line *create(const char *fileName, kmVec3 &a, kmVec3 &b, float thickness, float deg, ccColor3B c, kmVec3 &temp);
+    static Line *create(const char *fileName, kmVec3 &a, kmVec3 &b, float thickness, float deg, ccColor3B c, kmVec3 &temp, Lightning *lightning);
 };
 
 class Lightning : public CCSpriteBatchNode
@@ -31,6 +32,8 @@ public:
     void midDisplacement(float x1, float y1, float x2, float y2, float displace);
     void testLine(float x1, float y1, float x2, float y2);
     virtual void draw();
+    virtual void update(float delta);
+
 
 private:
 
@@ -39,8 +42,10 @@ private:
     float detail; //闪电的分段长度
     float thickness; //闪电的粗细
     float displace; //闪电的随机性
+    ccColor3B color;
     float alpha;
     float fadeOutRate;
+
     string fileName;
 };
 #endif

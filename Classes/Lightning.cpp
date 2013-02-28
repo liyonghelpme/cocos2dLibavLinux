@@ -3,7 +3,7 @@
 #include "cmath"
 #include "kazmath/utility.h"
 
-Line *Line::create(const char *fileName, kmVec3 &a, kmVec3 &b, float thickness, float deg, ccColor3B c, kmVec3 &temp)
+Line *Line::create(const char *fileName, kmVec3 &a, kmVec3 &b, float thickness, float deg, ccColor3B c, kmVec3 &temp, Lightning *lightning)
 {
     Line *line = new Line();
     line->initWithFile(fileName);
@@ -20,8 +20,6 @@ Line *Line::create(const char *fileName, kmVec3 &a, kmVec3 &b, float thickness, 
     line->setColor(c);
 
     line->autorelease();
-
-
     return line;
 }
 
@@ -40,11 +38,24 @@ Lightning *Lightning::create(const char *fileName, unsigned int capacity, float 
     ccBlendFunc blendFunc = {GL_ONE, GL_ONE};
     pRet->setBlendFunc(blendFunc);
     pRet->alpha = 1.0f;
-    pRet->fadeOutRate = 0.03f;
-
+    pRet->fadeOutRate = 3.3f;
+    pRet->color = ccc3(0.2*255, 0.2*255, 0.7*255);
+    pRet->scheduleUpdate();
 
     pRet->autorelease();
     return pRet;
+}
+void Lightning::update(float delta)
+{
+    alpha -= fadeOutRate*delta;
+    CCArray *children = getChildren();
+    CCObject *pObject;
+    CCARRAY_FOREACH(children, pObject)
+    {
+        CCSprite *sp = (CCSprite *)pObject;
+        ccColor3B c = {color.r*alpha, color.g*alpha, color.b*alpha};
+        sp->setColor(c);
+    }
 }
 Lightning::~Lightning()
 {
@@ -84,8 +95,9 @@ void Lightning::testLine(float x1, float y1, float x2, float y2)
 }
 void Lightning::draw()
 {
-    if(alpha <= 0)
+    if(alpha <= 0.0)
         return;
+
     if( m_pobTextureAtlas->getTotalQuads() == 0 )
     {
         return;
@@ -98,6 +110,8 @@ void Lightning::draw()
     ccGLBlendFunc( m_blendFunc.src, m_blendFunc.dst );
 
     m_pobTextureAtlas->drawQuads();
+
+
 }
 
 void Lightning::midDisplacement(float x1, float y1, float x2, float y2, float dis)
@@ -113,7 +127,7 @@ void Lightning::midDisplacement(float x1, float y1, float x2, float y2, float di
         ccColor3B c = {255*.2, 255*.2, 255*.7};
 
 
-        Line *line = Line::create(this->fileName.c_str(), a, b, thickness, deg, c, temp);
+        Line *line = Line::create(this->fileName.c_str(), a, b, thickness, deg, c, temp, this);
         addChild(line);
 
         CCSprite *s = CCSprite::create(fileName.c_str());
