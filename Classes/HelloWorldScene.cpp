@@ -1,6 +1,7 @@
 #include "HelloWorldScene.h"
 #include "AppMacros.h"
 #include "Lightning.h"
+#include "Layer3d.h"
 
 USING_NS_CC;
 
@@ -49,6 +50,9 @@ bool HelloWorld::init()
     //lightning->testLine(50 ,200, 300, 400);
     this->addChild(lightning);
     //lightning->runAction(CCFadeOut::create(2));
+
+    Layer3d *layer3d = Layer3d::create();
+    this->addChild(layer3d);
     
     return true;
 }
