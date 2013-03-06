@@ -96,6 +96,7 @@ void Cannon::draw() {
 
     ccDrawLine(ccp(0, 0), d);
     
+    ccDrawColor4F(0, 0, 0, 0);
 
 }
 void Cannon::onEnter() {
