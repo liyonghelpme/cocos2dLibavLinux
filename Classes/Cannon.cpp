@@ -21,6 +21,20 @@ Cannon *Cannon::create() {
     pRet->autorelease();
     return pRet;
 }
+/*
+加农炮的状态更新:
+    三个大阶段:
+        汇集能量
+        发射激光
+        爆炸
+    每个阶段包含3个小阶段:
+        根据passTime 来区分
+        阶段开始准备状态  阶段运行计时 阶段结束清理状态
+
+    可以按照堆栈的方式管理状态:
+        压入状态End Fly Start  再按照反方向弹出执行阶段
+
+*/
 void Cannon::update(float dt) {
     //printf("state %d\n", state, passTime, dir);
     if(state == FREE) {
@@ -28,7 +42,10 @@ void Cannon::update(float dt) {
         dir = v*kmPI*2;
         state = START;
         passTime = 0;
-    //开火
+    /*
+        开火:
+            设定bomb 
+    */
     } else if(state == START) {
         //传入位置和其它参数
         if(passTime == 0){
@@ -65,7 +82,9 @@ void Cannon::update(float dt) {
             state = BOMB;
             passTime = 0;
         }
-
+    /*
+        爆炸结束 移除bomb
+    */
     } else if(state == BOMB) { //爆炸阶段
         if(passTime == 0) {
             CCPoint p = getPosition();//攻击中点
@@ -81,6 +100,7 @@ void Cannon::update(float dt) {
             state = FREE;
             passTime = 0;
             bomb->removeFromParent();
+            bomb = NULL;
         }
     }
 }

@@ -19,6 +19,12 @@ void Bomb::updateQuads(float dt) {
 void Bomb::update(float dt) {
     printf("Bomb %f\n", dt);
 }
+/*
+汇聚粒子:
+    出现的位置，
+    炮口朝向， 注意粒子系统的angle和炮口的方向相差180度， 粒子系统是顺时针旋转 炮口方向是逆时针旋转
+    粒子汇聚时间 
+*/
 CCParticleSystemQuad *Bomb::bombStart(CCPoint &pos, float dir, float time){
     printf("bombStart\n");
     CCParticleSystemQuad *p = CCParticleSystemQuad::createWithTotalParticles(40);
@@ -47,9 +53,11 @@ CCParticleSystemQuad *Bomb::bombStart(CCPoint &pos, float dir, float time){
     //p->setSourcePosition(pos);
 
     p->setStartColor(ccc4f(0, 0.05, 1, 1.0));
-    p->setStartColorVar(ccc4f(0, 0, 0, 1.0));
+    p->setStartColorVar(ccc4f(0, 0, 0, 0.0));
+
     p->setEndColor(ccc4f(0, 0.05, 1.0, 1.0));
-    p->setEndColorVar(ccc4f(0, 0, 0, 1.0));
+    p->setEndColorVar(ccc4f(0, 0, 0, 0.0));
+
     p->setBlendAdditive(true);
     CCTexture2D *pTexture = CCTextureCache::sharedTextureCache()->addImage("circle2.png");
     p->setTexture(pTexture);
@@ -57,6 +65,11 @@ CCParticleSystemQuad *Bomb::bombStart(CCPoint &pos, float dir, float time){
     this->addChild(p);
     return p;
 }
+/*
+    start 飞行开始位置,通常炮口
+    end 飞行结束位置，目标位置
+    flyTime 飞行运动时间
+*/
 CCParticleSystemQuad *Bomb::bombFly(CCPoint &start, CCPoint &end, float flyTime) {
     CCParticleSystemQuad *p = CCParticleSystemQuad::createWithTotalParticles(1000);
     //float time = 0.1;
@@ -99,6 +112,7 @@ CCParticleSystemQuad *Bomb::bombFly(CCPoint &start, CCPoint &end, float flyTime)
 
     p->setStartColor(ccc4f(0, 0.05, 1, 1));
     p->setEndColor(ccc4f(0, 0.05, 1, 1));
+
     p->setBlendAdditive(true);
     
     CCTexture2D *pTexture = CCTextureCache::sharedTextureCache()->addImage("circle2.png");
@@ -116,7 +130,9 @@ void Bomb::removeLaser() {
     laser->removeFromParent();
 }
 
-
+/*
+    end 爆炸位置
+*/
 CCParticleSystemQuad *Bomb::bombEnd(CCPoint &end) {
     CCParticleSystemQuad *p = CCParticleSystemQuad::createWithTotalParticles(200);
     p->setPosition(end);
@@ -126,9 +142,9 @@ CCParticleSystemQuad *Bomb::bombEnd(CCPoint &end) {
 
     p->setEmissionRate(200);//爆炸效果持续的时间
     p->setGravity(ccp(0, 0));
-    p->setSpeed(30);//爆炸效果的速度 跟建筑范围相关
+    p->setSpeed(30);//爆炸效果的速度 跟建筑范围相关 速度越大爆炸范围越大
 
-    p->setRadialAccel(200);//爆炸速度
+    p->setRadialAccel(200);//爆炸最后的喷射速度
     p->setTangentialAccel(-80);
 
     p->setAngle(90);
