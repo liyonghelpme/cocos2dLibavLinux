@@ -27,7 +27,9 @@ OBJECTS = ./main.o \
         ../Classes/AppDelegate.o \
         ../Classes/HelloWorldScene.o \
         ../Classes/Lightning.o \
-        ../Classes/Layer3d.o
+        ../Classes/Bomb.o \
+        ../Classes/Cannon.o \
+        ../Classes/Background.o
 
 LBITS := $(shell getconf LONG_BIT)
 ifeq ($(LBITS),64)

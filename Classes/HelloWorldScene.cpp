@@ -1,7 +1,9 @@
 #include "HelloWorldScene.h"
 #include "AppMacros.h"
 #include "Lightning.h"
-#include "Layer3d.h"
+#include "Bomb.h"
+#include "Cannon.h"
+#include "Background.h"
 
 USING_NS_CC;
 
@@ -31,7 +33,10 @@ bool HelloWorld::init()
         return false;
     }
 
+    //resourceSize / designSize
     CCDirector::sharedDirector()->setContentScaleFactor(1.0);
+    //DesignResolution
+    CCDirector::sharedDirector()->getOpenGLView()->setDesignResolutionSize(800, 480, kResolutionExactFit);
     
     CCSize visibleSize = CCDirector::sharedDirector()->getVisibleSize();
     CCPoint origin = CCDirector::sharedDirector()->getVisibleOrigin();
@@ -42,8 +47,9 @@ bool HelloWorld::init()
     float contentScalor = CCDirector::sharedDirector()->getContentScaleFactor();
 
     printf("%f, %f, %f, %f\n", visibleSize.width, visibleSize.height, origin.x, origin.y);
-    printf("winSize %f, %f, %f, %f, %f\n", winSize.width, winSize.height, winPixle.width, winPixle.height, contentScalor);
+    printf("winSize %f, %f, %f, %f, %f, %f, %f\n", winSize.width, winSize.height, winPixle.width, winPixle.height, contentScalor, visibleSize.width, visibleSize.height);
 
+    
     Lightning *lightning = Lightning::create(NULL, 100, 10.0, 10.0, 20.0);
     lightning->midDisplacement(0, 160, 480, 160, 100.0);
     //lightning->testLine(300 ,400, 50, 200);
@@ -51,9 +57,18 @@ bool HelloWorld::init()
     this->addChild(lightning);
     //lightning->runAction(CCFadeOut::create(2));
 
-    Layer3d *layer3d = Layer3d::create();
-    this->addChild(layer3d);
+    //Layer3d *layer3d = Layer3d::create();
+    //this->addChild(layer3d);
+    //Bomb *bomb = Bomb::create();
+    //addChild(bomb);
+
+    Background *bk = Background::create();
+    addChild(bk);
     
+    Cannon *cannon = Cannon::create();
+    addChild(cannon);
+    cannon->setPosition(ccp(400, 240));
+
     return true;
 }
 
