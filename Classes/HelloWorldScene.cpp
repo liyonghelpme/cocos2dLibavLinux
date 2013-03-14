@@ -4,6 +4,7 @@
 #include "Bomb.h"
 #include "Cannon.h"
 #include "Background.h"
+//#include "Range.h"
 
 USING_NS_CC;
 
@@ -65,9 +66,52 @@ bool HelloWorld::init()
     Background *bk = Background::create();
     addChild(bk);
     
-    Cannon *cannon = Cannon::create();
-    addChild(cannon);
-    cannon->setPosition(ccp(400, 240));
+    //Cannon *cannon = Cannon::create();
+    //addChild(cannon);
+    //cannon->setPosition(ccp(400, 240));
+
+    //Range *range = Range::create();
+    //addChild(range);
+
+    CCSprite *sp;
+    ccBlendFunc src = {GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA};
+
+    sp = CCSprite::create("range_circle.png");
+    //sp->setScaleY(0.8);
+    sp->setPosition(ccp(50, 50));
+
+    sp->setBlendFunc(src);
+    sp->getTexture()->generateMipmap();
+    ccTexParams texParams = { GL_LINEAR_MIPMAP_LINEAR, GL_NEAREST_MIPMAP_LINEAR, GL_CLAMP_TO_EDGE, GL_CLAMP_TO_EDGE };    
+    sp->getTexture()->setTexParameters(&texParams);
+
+    sp->setScale(0.2);
+
+    addChild(sp);
+
+    sp = CCSprite::create("range_circle.png");
+    //sp->setScaleY(0.8);
+    sp->setPosition(ccp(100, 100));
+    sp->setBlendFunc(src);
+    sp->setScale(0.5);
+    addChild(sp);
+
+    sp = CCSprite::create("range_circle.png");
+    //sp->setScaleY(0.8);
+    sp->setPosition(ccp(200, 200));
+    sp->setBlendFunc(src);
+    sp->setScale(1);
+    addChild(sp);
+
+    sp = CCSprite::create("range_circle.png");
+    //sp->setScaleY(0.8);
+    sp->setPosition(ccp(400, 300));
+    sp->setBlendFunc(src);
+    sp->setScale(2);
+    sp->setOpacity(200); //设定alpha 
+
+    addChild(sp);
+
 
     return true;
 }

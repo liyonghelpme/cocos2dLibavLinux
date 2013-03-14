@@ -29,7 +29,8 @@ OBJECTS = ./main.o \
         ../Classes/Lightning.o \
         ../Classes/Bomb.o \
         ../Classes/Cannon.o \
-        ../Classes/Background.o
+        ../Classes/Background.o \
+        ../Classes/Range.o
 
 LBITS := $(shell getconf LONG_BIT)
 ifeq ($(LBITS),64)
@@ -96,6 +97,7 @@ $(TARGET): $(OBJECTS)
 
 %.o: %.c
 	$(CC) $(CCFLAGS) $(INCLUDES) $(DEFINES) $(VISIBILITY) -c $< -o $@
+    
 
 clean: 
 	rm -f $(OBJECTS) $(TARGET) core
