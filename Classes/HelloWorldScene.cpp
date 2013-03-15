@@ -4,6 +4,7 @@
 #include "Bomb.h"
 #include "Cannon.h"
 #include "Background.h"
+#include "MapGrid.h"
 //#include "Range.h"
 
 USING_NS_CC;
@@ -72,7 +73,8 @@ bool HelloWorld::init()
 
     //Range *range = Range::create();
     //addChild(range);
-
+    
+    /*
     CCSprite *sp;
     ccBlendFunc src = {GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA};
 
@@ -111,9 +113,63 @@ bool HelloWorld::init()
     sp->setOpacity(200); //设定alpha 
 
     addChild(sp);
+    */
 
+    setTouchEnabled(true);
 
+    bid = 0;
+    curSize = 1;
+    mapGrid = MapGrid::create();
+    addChild(mapGrid);
+
+    CCMenuItemFont *item1 = CCMenuItemFont::create("1", this, menu_selector(HelloWorld::on1));
+    CCMenuItemFont *item2 = CCMenuItemFont::create("2", this, menu_selector(HelloWorld::on2));
+    CCMenuItemFont *item3 = CCMenuItemFont::create("remove", this, menu_selector(HelloWorld::onRemove));
+    CCMenu *menu = CCMenu::create(item1, item2, item3,NULL);
+    addChild(menu);
+    menu->setPosition(ccp(0, 0));
+    item1->setPosition(ccp(700, 100));
+    item2->setPosition(ccp(700, 200));
+    item3->setPosition(ccp(700, 300));
     return true;
+}
+void HelloWorld::on1() {
+    curSize = 1;
+}
+void HelloWorld::on2() {
+    curSize = 2;
+}
+void HelloWorld::onRemove() {
+    mapGrid->clearBuilding(--bid);
+}
+
+bool HelloWorld::ccTouchBegan(CCTouch *touch, CCEvent *event) {
+    return true;
+}
+void HelloWorld::ccTouchMoved(CCTouch *touch, CCEvent *event) {
+    //CCPoint touchPoint = touch->getLocation();
+
+}
+void HelloWorld::registerWithTouchDispatcher() {
+    CCTouchDispatcher* pDispatcher = CCDirector::sharedDirector()->getTouchDispatcher();
+    pDispatcher->addTargetedDelegate(this, 0, true);
+}
+void HelloWorld::ccTouchEnded(CCTouch *touch, CCEvent *event) {
+    CCPoint touchPoint = touch->getLocation();
+    CCLog("touchPoint %f %f\n", touchPoint.x, touchPoint.y);
+
+    int xIndex = touchPoint.x/(mapGrid->cellWidth/2);
+    int yIndex = touchPoint.y/(mapGrid->cellHeight/2);
+
+    int initX = xIndex+curSize-1;
+    int initY = yIndex;
+
+    //调整位置 使网格 片的 最下面一行的面片的左下角 奇数偶数 性相同
+    if(initX%2 != initY%2)
+        yIndex++;
+
+
+    mapGrid->putBuilding(bid++, xIndex, yIndex, curSize, curSize);
 }
 
 

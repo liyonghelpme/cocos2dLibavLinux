@@ -2,6 +2,7 @@
 #define __HELLOWORLD_SCENE_H__
 
 #include "cocos2d.h"
+#include "MapGrid.h"
 
 class HelloWorld : public cocos2d::CCLayer
 {
@@ -17,6 +18,21 @@ public:
     
     // implement the "static node()" method manually
     CREATE_FUNC(HelloWorld);
+
+    virtual bool ccTouchBegan(CCTouch *touch, CCEvent *event);
+    virtual void ccTouchMoved(CCTouch *touch, CCEvent *event);
+    virtual void ccTouchEnded(CCTouch *touch, CCEvent *event);
+
+    virtual void registerWithTouchDispatcher();
+
+private:
+    MapGrid *mapGrid;
+    int bid;
+    int curSize;
+
+    void on1();
+    void on2();
+    void onRemove();
 };
 
 #endif // __HELLOWORLD_SCENE_H__
