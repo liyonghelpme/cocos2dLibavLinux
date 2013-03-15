@@ -168,8 +168,8 @@ void HelloWorld::ccTouchEnded(CCTouch *touch, CCEvent *event) {
     if(initX%2 != initY%2)
         yIndex++;
 
-
-    mapGrid->putBuilding(bid++, xIndex, yIndex, curSize, curSize);
+    BuildingElement *build = BuildingElement::create(bid++, xIndex, yIndex, curSize, curSize);
+    mapGrid->putBuilding(build);
 }
 
 

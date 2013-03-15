@@ -120,13 +120,14 @@ void MapGrid::addLine(int blockKey, int x0, int y0, int x1, int y1, int edgeId) 
     arr->addObject(s);
 }
 //新占领的块需要调整边线显示
-void MapGrid::putBuilding(int bid, int x, int y, int ex, int ey)
+void MapGrid::putBuilding(BuildingElement *be)
 {
-    CCLog("putBuilding %d %d %d %d %d", bid, x, y, ex, ey);
-    BuildingElement *be = new BuildingElement(bid, x, y, ex, ey);
-    buildings->setObject(be, bid);
-    be->release();
-    
+    CCLog("putBuilding %d %d %d %d %d", be->bid, be->x, be->y, be->ex, be->ey);
+    buildings->setObject(be, be->bid);
+    int x = be->x;
+    int y = be->y;
+    int ex = be->ex;
+    int ey = be->ey;
     
     for(int i = 0; i < ex; i++) {
         int initX = x+ex-i-1;
