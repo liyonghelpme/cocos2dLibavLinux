@@ -22,6 +22,16 @@ public:
 
 /*
 0，0 点位置开始的网格
+首先绘制Block 接着绘制Line
+需要设定
+    网格的大小
+    线的颜色
+    Block的使用的纹理
+    Line使用的纹理
+
+MapGrid *mapGrid = MapGrid::create();
+mapGrid->putBuilding(BuildingElement);
+mapGrid->clearBuilding(bid);//或者 使用BuildingElement？
 */
 class MapGrid : public CCNode{
 public:
