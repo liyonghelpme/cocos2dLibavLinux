@@ -5,6 +5,7 @@
 #include "Cannon.h"
 #include "Background.h"
 #include "MapGrid.h"
+#include "VideoController.h"
 //#include "Range.h"
 
 USING_NS_CC;
@@ -125,13 +126,36 @@ bool HelloWorld::init()
     CCMenuItemFont *item1 = CCMenuItemFont::create("1", this, menu_selector(HelloWorld::on1));
     CCMenuItemFont *item2 = CCMenuItemFont::create("2", this, menu_selector(HelloWorld::on2));
     CCMenuItemFont *item3 = CCMenuItemFont::create("remove", this, menu_selector(HelloWorld::onRemove));
-    CCMenu *menu = CCMenu::create(item1, item2, item3,NULL);
+    CCMenuItemFont *item4 = CCMenuItemFont::create("start", this, menu_selector(HelloWorld::onStart));
+
+    CCMenuItemFont *item5 = CCMenuItemFont::create("stop", this, menu_selector(HelloWorld::onStart));
+
+
+    menu = CCMenu::create(item1, item2, item3, item4, item5, NULL);
     addChild(menu);
     menu->setPosition(ccp(0, 0));
     item1->setPosition(ccp(700, 100));
     item2->setPosition(ccp(700, 200));
     item3->setPosition(ccp(700, 300));
+    item4->setPosition(ccp(700, 400));
+    item5->setPosition(ccp(600, 350));
+
+    video = VideoController::create();
+    CCLog("videoController %x", video);
+    addChild(video);
+
     return true;
+}
+//开始录制视频
+void HelloWorld::onStart(CCObject *item) {
+    if(!video->getStart()) {
+        video->startWork(800, 480, "GameVideo.mp4", 1./25); 
+        CCMenuItem *f = (CCMenuItem *)item;
+        f->removeFromParent();
+
+
+    } else
+        video->stopWork();
 }
 void HelloWorld::on1() {
     curSize = 1;

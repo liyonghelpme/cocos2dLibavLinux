@@ -1,6 +1,7 @@
 #ifndef __HELLOWORLD_SCENE_H__
 #define __HELLOWORLD_SCENE_H__
 
+#include "VideoController.h"
 #include "cocos2d.h"
 #include "MapGrid.h"
 
@@ -33,6 +34,10 @@ private:
     void on1();
     void on2();
     void onRemove();
+    void onStart(CCObject *);
+    CCMenu *menu;
+
+    VideoController *video; 
 };
 
 #endif // __HELLOWORLD_SCENE_H__

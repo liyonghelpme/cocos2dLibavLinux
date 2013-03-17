@@ -31,7 +31,9 @@ OBJECTS = ./main.o \
         ../Classes/Cannon.o \
         ../Classes/Background.o \
         ../Classes/Range.o \
-        ../Classes/MapGrid.o
+        ../Classes/MapGrid.o \
+		../Classes/VideoController.o \
+		../Classes/yuv420.o 
 
 LBITS := $(shell getconf LONG_BIT)
 ifeq ($(LBITS),64)
@@ -72,7 +74,7 @@ BIN_DIR = $(BIN_DIR_ROOT)
 debug: BIN_DIR = $(BIN_DIR_ROOT)/debug
 debug: CCFLAGS += -g3 -O0
 debug: CXXFLAGS += -g3 -O0
-debug: SHAREDLIBS += -L$(COCOS2DX_PATH_2)/lib/linux/Debug -lcocos2d -lrt -lz -lcocosdenshion
+debug: SHAREDLIBS += -L$(COCOS2DX_PATH_2)/lib/linux/Debug -lcocos2d -lrt -lz -lcocosdenshion -lavcodec -lavformat
 debug: SHAREDLIBS += -Wl,-rpath,$(COCOS2DX_PATH_2)/lib/linux/Debug/
 debug: SHAREDLIBS += -Wl,-rpath,./lib
 debug: DEFINES += -DDEBUG -DCOCOS2D_DEBUG=1
