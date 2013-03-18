@@ -37,5 +37,6 @@ private:
     int width; //视频的 宽度
     int height; //视频的高度
     void *tempCache;
+    int frameCount;
 };
 #endif

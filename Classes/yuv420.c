@@ -17,7 +17,11 @@ AVCodecContext *video_init(int width, int height, int frameRate)
     AVCodecContext *c; //上下文
     
     //压缩视频数据
-    codec = avcodec_find_encoder(CODEC_ID_MPEG4);
+    codec = avcodec_find_encoder(CODEC_ID_H264);
+    int i;
+    for(i = 0; codec->pix_fmts[i] != PIX_FMT_NONE; i++)
+        printf("pixel format %s\n", av_pix_fmt_descriptors[codec->pix_fmts[i]].name);
+
     if (!codec) {
         fprintf(stderr, "codec not found\n");
         exit(1);
@@ -25,14 +29,15 @@ AVCodecContext *video_init(int width, int height, int frameRate)
     //针对该编码器的一个 上下文
     c = avcodec_alloc_context3(codec);
 
-    c->bit_rate = 400000;
+    c->bit_rate = 1000000;
     /* resolution must be a multiple of two */
     c->width = width;
     c->height = height;
     /* frames per second 在25的范围内*/
-    c->time_base= (AVRational){1, frameRate};
-    c->gop_size = 10; /* emit one intra frame every ten frames */
-    c->max_b_frames=1;
+    c->time_base= (AVRational){1, 25};
+    c->gop_size = 12; /* emit one intra frame every ten frames */
+    //不要双向推测帧
+    //c->max_b_frames=1;
     c->pix_fmt = PIX_FMT_YUV420P;
 
     //打开编码器的上下文

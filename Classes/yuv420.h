@@ -9,6 +9,7 @@ extern "C" {
 #include <libavcodec/avcodec.h>
 #include <libavformat/avformat.h>
 #include "colorspace.h"
+#include "libavutil/pixdesc.h"
 AVCodecContext *video_init(int width, int height, int frameRate);
 AVFrame *video_initFrame(AVCodecContext *c, uint8_t **pb);
 void video_initBuf(AVCodecContext *c, int *outbuf_size, uint8_t **outbuf);
