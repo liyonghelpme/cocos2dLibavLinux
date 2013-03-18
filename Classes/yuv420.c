@@ -2,6 +2,7 @@
 extern "C" {
 #endif
 #include "yuv420.h"
+
 #ifdef __cplusplus
 }
 #endif
@@ -16,7 +17,7 @@ AVCodecContext *video_init(int width, int height, int frameRate)
     AVCodecContext *c; //上下文
     
     //压缩视频数据
-    codec = avcodec_find_encoder(CODEC_ID_MPEG1VIDEO);
+    codec = avcodec_find_encoder(CODEC_ID_MPEG4);
     if (!codec) {
         fprintf(stderr, "codec not found\n");
         exit(1);

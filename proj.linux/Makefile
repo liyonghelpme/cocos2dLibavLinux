@@ -73,8 +73,8 @@ BIN_DIR = $(BIN_DIR_ROOT)
 
 debug: BIN_DIR = $(BIN_DIR_ROOT)/debug
 debug: CCFLAGS += -g3 -O0
-debug: CXXFLAGS += -g3 -O0
-debug: SHAREDLIBS += -L$(COCOS2DX_PATH_2)/lib/linux/Debug -lcocos2d -lrt -lz -lcocosdenshion -lavcodec -lavformat
+debug: CXXFLAGS += -g3 -O0 -D__STDC_CONSTANT_MACROS
+debug: SHAREDLIBS += -L$(COCOS2DX_PATH_2)/lib/linux/Debug -lcocos2d -lrt -lz -lcocosdenshion -lavcodec -lavformat -lswscale
 debug: SHAREDLIBS += -Wl,-rpath,$(COCOS2DX_PATH_2)/lib/linux/Debug/
 debug: SHAREDLIBS += -Wl,-rpath,./lib
 debug: DEFINES += -DDEBUG -DCOCOS2D_DEBUG=1
@@ -83,7 +83,7 @@ debug: $(TARGET)
 
 release: BIN_DIR = $(BIN_DIR_ROOT)/release
 release: CCFLAGS += -O3
-release: CXXFLAGS += -O3
+release: CXXFLAGS += -O3  -D__STDC_CONSTANT_MACROS
 release: SHAREDLIBS += -L../../../../lib/linux/Release -lcocos2d -lrt -lz -lcocosdenshion
 release: SHAREDLIBS += -Wl,-rpath,../../../../../../lib/linux/Release/
 release: DEFINES += -DNDEBUG

@@ -36,5 +36,6 @@ private:
     float totalTime; //当前总共记录的时间
     int width; //视频的 宽度
     int height; //视频的高度
+    void *tempCache;
 };
 #endif

@@ -1,4 +1,6 @@
 #include "VideoController.h"
+#include "string.h"
+
 
 VideoController *VideoController::create()
 {
@@ -19,6 +21,11 @@ bool VideoController::init()
     startYet = false;
 
     scheduleUpdate();
+    
+    int fmt1 = avcodec_pix_fmt_to_codec_tag(PIX_FMT_RGB32_1);	
+    //int fmt2 = avcodec_pix_fmt_to_codec_tag(CODEC_ID_MPEG2VIDEO);	
+    //int fmt3 = avcodec_pix_fmt_to_codec_tag(CODEC_ID_MPEG4);	
+    CCLog("pixel fmt %d", fmt1);
     return true;
 }
 
@@ -26,6 +33,7 @@ void VideoController::startWork(int w, int h, char *fileName, float fr)
 {
     width = w;
     height = h;
+    tempCache = malloc(sizeof(int)*w);
     startYet = true;
     frameRate = fr;
 
@@ -37,9 +45,12 @@ void VideoController::startWork(int w, int h, char *fileName, float fr)
     c = video_init(width, height, 1/frameRate); //每秒多少帧 mpeg1/2 支持24-30 HZ
     picture = video_initFrame(c, &picture_buf);
     video_initBuf(c, &outbuf_size, &outbuf);
+
+
 }
 void VideoController::stopWork()
 {
+    free(tempCache);
     outbuf[0] = 0x00;
     outbuf[1] = 0x00;
     outbuf[2] = 0x01;
@@ -58,7 +69,29 @@ void VideoController::stopWork()
 void VideoController::compressCurrentFrame()
 {
     CCLog("compressCurrentFrame", c->width, c->height);
-    glReadPixels(0, 0, 800, 480, GL_RGBA, GL_UNSIGNED_BYTE, pixelBuffer);    
+    glReadPixels(0, 0, width, height, GL_RGBA, GL_UNSIGNED_BYTE, pixelBuffer);    
+    
+
+    SwsContext *sctx = sws_getCachedContext (NULL, width, height, PIX_FMT_RGBA, width, height, PIX_FMT_YUV420P, SWS_FAST_BILINEAR, NULL, NULL, NULL);
+
+    //使用不同的算法进行压缩
+    int inLineSize[] = {width*4, 0, 0, 0};
+    uint8_t *srcSlice[] = {pixelBuffer, NULL, NULL};
+    
+    //从底向上处理
+    // 修正数据方向 行交换方法
+    int i, j;
+    for(i = 0, j = height-1; i < j; i++, j--) {
+        memcpy(tempCache, &pixelBuffer[(i*width)*4], 4*width);
+        memcpy(&pixelBuffer[(i*width)*4], &pixelBuffer[(j*width)*4], 4*width);
+        memcpy(&pixelBuffer[(j*width)*4], tempCache, 4*width);
+    }
+
+    int retCode = sws_scale (sctx, srcSlice, inLineSize, 0, height, picture->data, picture->linesize);
+    sws_freeContext(sctx);
+
+
+    /*
     int x, y;
     //ReadPixels 读出的数据的 Y 方向是相反的
     for(y = 0; y < c->height; y++) {
@@ -83,6 +116,7 @@ void VideoController::compressCurrentFrame()
             picture->data[2][newY * picture->linesize[2] + x] = RGB_TO_V_CCIR(r, g, b, 0);
         }
     }
+    */
     int out_size = avcodec_encode_video(c, outbuf, outbuf_size, picture);
     fwrite(outbuf, 1, out_size, f);
 }

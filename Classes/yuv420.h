@@ -4,6 +4,8 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
+#include "libavutil/pixfmt.h"
+#include "libswscale/swscale.h"
 #include <libavcodec/avcodec.h>
 #include <libavformat/avformat.h>
 #include "colorspace.h"
