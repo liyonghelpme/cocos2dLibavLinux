@@ -1,5 +1,11 @@
 #include "VideoController.h"
 #include "string.h"
+/*
+video = VideoController::create();
+addChild(video);
+video->startWork();
+video->stopWork();
+*/
 
 
 VideoController *VideoController::create()

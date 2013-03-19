@@ -1,3 +1,7 @@
 cocos2dx 闪电实现
-使用CCSpriteBatchNode 添加CCSprite 使用edge.png 作为闪电的纹理
+Libav
+linux
+
+压缩mpeg4 simple profile  视频
+参考 libavformat 中的 output-example.c 例
 
