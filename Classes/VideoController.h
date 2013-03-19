@@ -21,17 +21,13 @@ private:
     float MaxRecordTime; // 最大视频时间
     float frameRate;  //帧率
 
-    
-    AVCodecContext *c; //视频编码上下文
     AVFrame *picture; //每一帧
     int outbuf_size;  
     uint8_t *outbuf;  //输出数据缓存
-    uint8_t *picture_buf; //每一帧数据YUV 数据
     uint8_t *pixelBuffer; //显卡中的RGBA 数据
 
     float passTime; //每帧记录的时间
     bool startYet;  //是否开始记录
-    FILE *f;        //输出的文件
 
     float totalTime; //当前总共记录的时间
     //用于像素 缓冲分配

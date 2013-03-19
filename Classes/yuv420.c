@@ -136,3 +136,85 @@ void video_clean(FILE *f, uint8_t *picture_buf, uint8_t *outbuf, AVCodecContext 
     av_free(picture);
 }
 
+AVStream *add_video_stream(AVFormatContext *oc, enum CodecID codec_id, int width, int height) 
+{
+    AVCodecContext *c;
+    AVStream *st;
+    st = avformat_new_stream(oc, NULL);
+    c = st->codec;
+    c->codec_id = codec_id;
+    c->codec_type = AVMEDIA_TYPE_VIDEO;
+    c->bit_rate = 400000;
+    c->width = width;
+    c->height = height;
+    
+    c->time_base.den = 25;
+    c->time_base.num = 1;
+    c->gop_size = 12;
+    c->pix_fmt = PIX_FMT_YUV420P;
+    c->profile = FF_PROFILE_MPEG4_SIMPLE;
+    
+    if(oc->oformat->flags & AVFMT_GLOBALHEADER)
+        c->flags |= CODEC_FLAG_GLOBAL_HEADER;
+    return st;
+}
+
+
+static AVFrame *alloc_picture(enum PixelFormat pix_fmt, int width, int height)
+{
+    AVFrame *picture;
+    uint8_t *picture_buf;
+    int size;
+
+    picture = avcodec_alloc_frame();
+    if (!picture)
+        return NULL;
+    //得到picture 大小的函数 格式 宽度 和 高度 YUV420  YUV422 RGB24
+    size = avpicture_get_size(pix_fmt, width, height);
+    picture_buf = av_malloc(size);
+    if (!picture_buf) {
+        av_free(picture);
+        return NULL;
+    }
+    //填充 picture frame linesize frame的 data属性
+    avpicture_fill((AVPicture *)picture, picture_buf,
+                   pix_fmt, width, height);
+    return picture;
+}
+
+void open_video(AVFormatContext *oc, AVStream *st, uint8_t **outbuf, int *outSize, AVPicture **pic) 
+{
+    AVCodec *codec;
+    AVCodecContext *c;
+    uint8_t *video_outbuf;
+    int video_outbuf_size;
+    AVPicture *picture;
+
+    c = st->codec;
+    codec = avcodec_find_encoder(c->codec_id);
+    if(!codec) {
+        printf("codec not found\n");
+        exit(1);
+    }
+    if(avcodec_open(c, codec) < 0) {
+        printf("could not open codec\n");
+        exit(1);
+    }
+
+    video_outbuf = NULL;
+    //输出格式 不是 纯数据 则 需要分配out buffer 来处理
+    if(!(oc->oformat->flags & AVFMT_RAWPICTURE)) {
+        video_outbuf_size = 200000;
+        video_outbuf = av_malloc(video_outbuf_size);
+    }
+    picture = alloc_picture(c->pix_fmt, c->width, c->height);
+    if(!picture) {
+        printf("could not allocate picture\n");
+        exit(1);
+    }
+    //不需要一个临时的YUV420P picture
+    *outbuf = video_outbuf;
+    *outSize = video_outbuf_size;
+    *pic = picture;
+}
+

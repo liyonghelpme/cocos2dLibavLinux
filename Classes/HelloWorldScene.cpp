@@ -128,7 +128,7 @@ bool HelloWorld::init()
     CCMenuItemFont *item3 = CCMenuItemFont::create("remove", this, menu_selector(HelloWorld::onRemove));
     CCMenuItemFont *item4 = CCMenuItemFont::create("start", this, menu_selector(HelloWorld::onStart));
 
-    CCMenuItemFont *item5 = CCMenuItemFont::create("stop", this, menu_selector(HelloWorld::onStart));
+    CCMenuItemFont *item5 = CCMenuItemFont::create("stop", this, menu_selector(HelloWorld::onStop));
 
 
     menu = CCMenu::create(item1, item2, item3, item4, item5, NULL);
@@ -157,10 +157,12 @@ void HelloWorld::onStart(CCObject *item) {
         CCMenuItem *f = (CCMenuItem *)item;
         f->removeFromParent();
 
-
-    } else
-        video->stopWork();
+    }
 }
+void HelloWorld::onStop(CCObject *item) {
+    video->stopWork();
+}
+
 void HelloWorld::on1() {
     curSize = 1;
 }

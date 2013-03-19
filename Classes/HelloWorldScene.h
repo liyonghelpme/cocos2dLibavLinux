@@ -35,6 +35,7 @@ private:
     void on2();
     void onRemove();
     void onStart(CCObject *);
+    void onStop(CCObject *);
     CCMenu *menu;
 
     VideoController *video; 
