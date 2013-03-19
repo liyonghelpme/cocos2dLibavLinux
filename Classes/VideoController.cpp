@@ -44,10 +44,15 @@ void VideoController::startWork(int winW, int winH, int w, int h, char *fileName
     passTime = frameRate;
     totalTime = 0;
     frameCount = 0;
+    
 
     pixelBuffer = (uint8_t *)malloc(sizeof(int)*winWidth*winHeight);
     f = fopen(fileName, "wb");
-    c = video_init(width, height, 1/frameRate); //每秒多少帧 mpeg1/2 支持24-30 HZ
+    //c = video_init(width, height, 1/frameRate); //每秒多少帧 mpeg1/2 支持24-30 HZ
+     
+
+    fmt = av_guess_format("mp4", NULL, NULL);
+
     picture = video_initFrame(c, &picture_buf);
     video_initBuf(c, &outbuf_size, &outbuf);
 
