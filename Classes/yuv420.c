@@ -7,8 +7,11 @@ extern "C" {
 }
 #endif
 
+
 /*
 解码器的上下文
+http://stackoverflow.com/questions/3553003/encoding-h-264-with-libavcodec-x264
+设置ctx
 */
 AVCodecContext *video_init(int width, int height, int frameRate)
 {
@@ -17,7 +20,7 @@ AVCodecContext *video_init(int width, int height, int frameRate)
     AVCodecContext *c; //上下文
     
     //压缩视频数据
-    codec = avcodec_find_encoder(CODEC_ID_H264);
+    codec = avcodec_find_encoder(CODEC_ID_MPEG4);
     int i;
     for(i = 0; codec->pix_fmts[i] != PIX_FMT_NONE; i++)
         printf("pixel format %s\n", av_pix_fmt_descriptors[codec->pix_fmts[i]].name);
@@ -29,7 +32,7 @@ AVCodecContext *video_init(int width, int height, int frameRate)
     //针对该编码器的一个 上下文
     c = avcodec_alloc_context3(codec);
 
-    c->bit_rate = 1000000;
+    c->bit_rate = 400000;
     /* resolution must be a multiple of two */
     c->width = width;
     c->height = height;
@@ -37,8 +40,9 @@ AVCodecContext *video_init(int width, int height, int frameRate)
     c->time_base= (AVRational){1, 25};
     c->gop_size = 12; /* emit one intra frame every ten frames */
     //不要双向推测帧
-    //c->max_b_frames=1;
+    c->max_b_frames=0;
     c->pix_fmt = PIX_FMT_YUV420P;
+    c->profile = FF_PROFILE_MPEG4_SIMPLE;
 
     //打开编码器的上下文
     if (avcodec_open2(c, codec, NULL) < 0) {
@@ -56,17 +60,16 @@ AVFrame *video_initFrame(AVCodecContext *c, uint8_t **pb)
     AVFrame *picture;
     picture = avcodec_alloc_frame();
     uint8_t *picture_buf;
-    int size = c->width * c->height;
+    //int size = c->width * c->height;
 
-    picture_buf = malloc((size * 3) / 2); /* size for YUV 420 */
-
-    picture->data[0] = picture_buf;
-    picture->data[1] = picture->data[0] + size;
-    picture->data[2] = picture->data[1] + size / 4;
-    //Y 解析度 是 U V 的两倍
-    picture->linesize[0] = c->width;
-    picture->linesize[1] = c->width / 2;
-    picture->linesize[2] = c->width / 2;
+    int size = avpicture_get_size(c->pix_fmt, c->width, c->height);
+    picture_buf = av_malloc(size);
+    if(!picture_buf) {
+        av_free(picture_buf);
+        return NULL;
+    }
+    avpicture_fill((AVPicture *)picture, picture_buf, c->pix_fmt, c->width, c->height);
+    printf("picture_buf %d %d %d %d\n", size, picture->linesize[0], picture->linesize[1],picture->linesize[2] );
 
     *pb = picture_buf;
     return picture;

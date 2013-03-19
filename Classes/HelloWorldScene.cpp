@@ -149,7 +149,11 @@ bool HelloWorld::init()
 //开始录制视频
 void HelloWorld::onStart(CCObject *item) {
     if(!video->getStart()) {
-        video->startWork(800, 480, "GameVideo.mp4", 1./25); 
+        CCSize winSize = CCDirector::sharedDirector()->getWinSize();
+        //704x576  比例变换  
+        //比例变换功能没有实现
+
+        video->startWork(960, 640, 960, 640, "GameVideo.mp4", 1./25); 
         CCMenuItem *f = (CCMenuItem *)item;
         f->removeFromParent();
 

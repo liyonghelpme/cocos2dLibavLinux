@@ -9,7 +9,7 @@ class VideoController : public CCNode {
 public:
     static VideoController *create();
     virtual bool init();
-    void startWork(int w, int h, char *fn, float fr);
+    void startWork(int winW, int winH, int w, int h, char *fn, float fr);
     void stopWork();
     virtual void update(float dt);
     ~VideoController();
@@ -34,9 +34,20 @@ private:
     FILE *f;        //输出的文件
 
     float totalTime; //当前总共记录的时间
+    //用于像素 缓冲分配
+    int winWidth;//屏幕大小
+    int winHeight; //屏幕大小
+    //用于视频缓冲分配
     int width; //视频的 宽度
     int height; //视频的高度
     void *tempCache;
     int frameCount;
+
+    float testTime;
+
+    AVFormatContext *oc;
+    AVOutputFormat *fmt;
+    AVStream *video_st;
+    double video_pts;
 };
 #endif

@@ -19,6 +19,7 @@ bool VideoController::init()
     MaxRecordTime = 1000;
     frameRate = 0.1;  //0.1s 1帧
     startYet = false;
+    testTime = 10;
 
     scheduleUpdate();
     
@@ -29,8 +30,11 @@ bool VideoController::init()
     return true;
 }
 
-void VideoController::startWork(int w, int h, char *fileName, float fr)
+void VideoController::startWork(int winW, int winH, int w, int h, char *fileName, float fr)
 {
+    winWidth = winW;
+    winHeight = winH;
+
     width = w;
     height = h;
     tempCache = malloc(sizeof(int)*w);
@@ -41,7 +45,7 @@ void VideoController::startWork(int w, int h, char *fileName, float fr)
     totalTime = 0;
     frameCount = 0;
 
-    pixelBuffer = (uint8_t *)malloc(sizeof(int)*width*height);
+    pixelBuffer = (uint8_t *)malloc(sizeof(int)*winWidth*winHeight);
     f = fopen(fileName, "wb");
     c = video_init(width, height, 1/frameRate); //每秒多少帧 mpeg1/2 支持24-30 HZ
     picture = video_initFrame(c, &picture_buf);
@@ -95,19 +99,22 @@ void VideoController::compressCurrentFrame()
     int out_size = avcodec_encode_video(c, outbuf, outbuf_size, picture);
     fwrite(outbuf, 1, out_size, f);
 }
-
+/*
+pts 帧率的问题
+http://stackoverflow.com/questions/6603979/ffmpegavcodec-encode-video-setting-pts-h264
+*/
 void VideoController::update(float dt)
 {
     //CCLog("update %d %f", startYet, dt);
     if(startYet ) {
 
-        if(totalTime < MaxRecordTime) {
+        if(totalTime < testTime) {//测试时间10s
             totalTime += dt;
             passTime += dt;
             if(passTime >= frameRate) {
                 CCLog("update %f %f %f %f", totalTime, MaxRecordTime, passTime, frameRate);
                 passTime -=  frameRate;
-                picture->pts = (1.0/30.0)*90*frameCount;
+                //picture->pts = (1.0/30.0)*90*frameCount;
                 compressCurrentFrame();
                 frameCount += 1;
             }
