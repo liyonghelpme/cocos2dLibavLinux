@@ -153,7 +153,7 @@ void HelloWorld::onStart(CCObject *item) {
         //704x576  比例变换  
         //比例变换功能没有实现
 
-        video->startWork(960, 640, 960, 640, "GameVideo.mp4", 1./25); 
+        video->startWork(960, 640, 960, 640, "GameVideo.ogv", 1./25); 
         CCMenuItem *f = (CCMenuItem *)item;
         f->removeFromParent();
 

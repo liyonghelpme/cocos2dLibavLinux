@@ -1,5 +1,6 @@
 #include "VideoController.h"
 #include "string.h"
+#include <stdlib.h>
 /*
 video = VideoController::create();
 addChild(video);
@@ -86,6 +87,11 @@ void VideoController::startWork(int winW, int winH, int w, int h, char *fileName
     }
 
     av_write_header(oc);
+    
+    printf("before system\n");
+    int ret = system("python ~/audio.py");
+    printf("after system %d\n", ret);
+    
 }
 void VideoController::stopWork()
 {
@@ -113,13 +119,16 @@ void VideoController::stopWork()
     outbuf = NULL;
     picture = NULL;
     startYet = false;
-
+   
+    printf("before kill pid\n");
+    int ret = system("python ~/kill.py");
+    printf("after kill pid %d\n", ret);
 }
 void VideoController::compressCurrentFrame()
 {
     AVCodecContext *c = video_st->codec;
 
-    CCLog("compressCurrentFrame", c->width, c->height);
+    //CCLog("compressCurrentFrame", c->width, c->height);
     glReadPixels(0, 0, width, height, GL_RGBA, GL_UNSIGNED_BYTE, pixelBuffer);    
     
 
@@ -139,7 +148,7 @@ void VideoController::compressCurrentFrame()
     }
 
     int retCode = sws_scale (sctx, srcSlice, inLineSize, 0, height, picture->data, picture->linesize);
-    printf("sws_scale %d\n", retCode);
+    //printf("sws_scale %d\n", retCode);
     sws_freeContext(sctx);
 
     video_pts = (double)video_st->pts.val*video_st->time_base.num/video_st->time_base.den;
@@ -184,7 +193,7 @@ void VideoController::update(float dt)
             totalTime += dt;
             passTime += dt;
             if(passTime >= frameRate) {
-                CCLog("update %f %f %f %f", totalTime, MaxRecordTime, passTime, frameRate);
+                //CCLog("update %f %f %f %f", totalTime, MaxRecordTime, passTime, frameRate);
                 passTime -=  frameRate;
                 compressCurrentFrame();
                 frameCount += 1;
