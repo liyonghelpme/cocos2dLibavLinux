@@ -18,6 +18,7 @@ public:
         return startYet;
     }
 private:
+    float curTime;
     float MaxRecordTime; // 最大视频时间
     float frameRate;  //帧率
 

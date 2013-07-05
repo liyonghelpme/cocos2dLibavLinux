@@ -26,7 +26,7 @@ bool VideoController::init()
     MaxRecordTime = 1000;
     frameRate = 1./25;  //0.1s 1帧
     startYet = false;
-    testTime = 10;
+    testTime = 10000;//10s -->4s 为什么时间不对呢？
 
     scheduleUpdate();
     
@@ -39,6 +39,7 @@ bool VideoController::init()
 
 void VideoController::startWork(int winW, int winH, int w, int h, char *fileName, float fr)
 {
+    curTime = 0;
     winWidth = winW;
     winHeight = winH;
 
@@ -131,7 +132,7 @@ void VideoController::compressCurrentFrame()
     //CCLog("compressCurrentFrame", c->width, c->height);
     glReadPixels(0, 0, width, height, GL_RGBA, GL_UNSIGNED_BYTE, pixelBuffer);    
     
-
+    //将图片数据转化成 YUV
     SwsContext *sctx = sws_getCachedContext (NULL, width, height, PIX_FMT_RGBA, width, height, PIX_FMT_YUV420P, SWS_FAST_BILINEAR, NULL, NULL, NULL);
 
     //使用不同的算法进行压缩
@@ -147,11 +148,14 @@ void VideoController::compressCurrentFrame()
         memcpy(&pixelBuffer[(j*width)*4], tempCache, 4*width);
     }
 
+    //调整视频尺寸
     int retCode = sws_scale (sctx, srcSlice, inLineSize, 0, height, picture->data, picture->linesize);
     //printf("sws_scale %d\n", retCode);
     sws_freeContext(sctx);
 
-    video_pts = (double)video_st->pts.val*video_st->time_base.num/video_st->time_base.den;
+    //video_pts = (double)video_st->pts.val*video_st->time_base.num/video_st->time_base.den;
+    //frame rate 作为单位
+    picture->pts = curTime*600/25;
 
 
     int ret;
@@ -186,21 +190,25 @@ http://stackoverflow.com/questions/6603979/ffmpegavcodec-encode-video-setting-pt
 */
 void VideoController::update(float dt)
 {
+
     //CCLog("update %d %f", startYet, dt);
     if(startYet ) {
 
-        if(totalTime < testTime) {//测试时间10s
+        //关闭测试时间限制
+        //if(totalTime < testTime) {//测试时间10s
             totalTime += dt;
             passTime += dt;
-            if(passTime >= frameRate) {
+            //if(passTime >= frameRate) {
                 //CCLog("update %f %f %f %f", totalTime, MaxRecordTime, passTime, frameRate);
                 passTime -=  frameRate;
                 compressCurrentFrame();
                 frameCount += 1;
-            }
-        } else {
-            stopWork();
-        }
+            //}
+        //} else {
+        //    stopWork();
+        //}
+
+        curTime += dt;
     }
 }
 
